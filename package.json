@@ -1,0 +1,13 @@
+{
+  "name": "proofflow",
+  "private": true,
+  "version": "0.1.0-reconstruction",
+  "packageManager": "pnpm@10",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "preview": "vite preview"
+  }
+}
