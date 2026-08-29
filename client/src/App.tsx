@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { classifyCivicRecord, type CivicRecord } from "../../../shared/validation";
+import { classifyCivicRecord, type CivicRecord } from "../../shared/validation";
 
 type View = "overview" | "proof-flow" | "evidence" | "review";
 const nav: Array<{ id: View; label: string; description: string }> = [
@@ -9,7 +9,6 @@ const nav: Array<{ id: View; label: string; description: string }> = [
   { id: "review", label: "Review Queue", description: "Human verification" },
 ];
 const sample: CivicRecord = { id: "demo-1", claim: "A verified primary source supports this statement.", evidence: "Exact source passage retained for review.", primarySource: { citation: "Demo source", exactSnippet: "Exact source passage retained for review.", verified: true } };
-
 export default function App() {
   const [view, setView] = useState<View>("overview");
   const classification = useMemo(() => classifyCivicRecord(sample), []);
