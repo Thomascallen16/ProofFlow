@@ -43,6 +43,28 @@ export interface EvidenceLink {
   relationship: EvidenceRelationship;
 }
 
+export interface VerificationRecord {
+  id: string;
+  targetId: string;
+  status: "VERIFIED" | "UNVERIFIED" | "REJECTED" | "NEEDS_REVIEW";
+  verifier?: string;
+  method?: string;
+  verifiedAt: string;
+  reason?: string;
+}
+
+export interface AuditEvent {
+  id: string;
+  timestamp: string;
+  action: "CREATED" | "UPDATED" | "ARCHIVED" | "LINKED" | "UNLINKED" | "STATUS_CHANGED";
+  entityType: string;
+  entityId: string;
+  actorRef?: string;
+  summary: string;
+  beforeHash?: string;
+  afterHash?: string;
+}
+
 export interface IntegrityInput {
   question: string;
   claim: Claim;
