@@ -4,7 +4,10 @@ const root = process.cwd();
 const ignored = new Set(['.git', 'node_modules', 'dist', 'coverage']);
 const textFile = /\.(md|mdx|txt|yml|yaml|json|toml|ini|cfg|sh|bash|ps1)$/i;
 const agentFile = /(^|\/)(AGENTS\.md|CLAUDE\.md|GEMINI\.md|llms\.txt|llms-full\.txt)$/i;
-const install = /(^|[\s`])(?:npm\s+(?:install|i)|npm\s+exec|npx(?:\s|$)|pnpm\s+(?:add|install|dlx)|yarn\s+(?:add|install|dlx)|pip(?:3)?\s+install|pipx\s+install|(?:curl|wget)\b[^\n|]*\|\s*(?:sh|bash))/im;
+
+// Match commands presented as executable shell lines, not security-policy prose
+// that merely names commands as examples or prohibited operations.
+const installCommandLine = /^\s*(?:[-*]\s+)?(?:npm\s+(?:install|i|exec)|npx(?:\s|$)|pnpm\s+(?:add|install|dlx)|yarn\s+(?:add|install|dlx)|pip(?:3)?\s+install|pipx\s+install|(?:curl|wget)\b[^\n|]*\|\s*(?:sh|bash)|(?:curl|wget)\s+[^\n]+\.(?:sh|bash)(?:\s|$))/im;
 const findings = [];
 async function walk(dir) {
   for (const entry of await readdir(dir, { withFileTypes: true })) {
@@ -14,8 +17,8 @@ async function walk(dir) {
     else if (textFile.test(entry.name)) {
       const text = await readFile(full, 'utf8');
       const path = relative(root, full);
-      if (agentFile.test(path) && install.test(text)) findings.push(`${path}: executable installation command in AI-facing file`);
-      if (/\b(?:llms\.txt|llms-full\.txt)\b/i.test(text) && install.test(text)) findings.push(`${path}: machine-readable AI documentation plus installation command`);
+      if (agentFile.test(path) && installCommandLine.test(text)) findings.push(`${path}: executable installation command in AI-facing file`);
+      if (/\b(?:llms\.txt|llms-full\.txt)\b/i.test(text) && installCommandLine.test(text)) findings.push(`${path}: machine-readable AI documentation plus executable installation command`);
     }
   }
 }
